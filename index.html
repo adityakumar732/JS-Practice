@@ -1,0 +1,821 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>3D Wall Clock</title>
+
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      min-height: 100vh;
+
+      display: flex;
+      justify-content: center;
+      align-items: center;
+
+      font-family: Arial, sans-serif;
+
+      overflow: hidden;
+
+      background:
+        radial-gradient(
+          circle at center,
+          #555 0%,
+          #363636 45%,
+          #151515 100%
+        );
+
+      perspective: 1200px;
+    }
+
+    /* =========================
+       WALL
+    ========================= */
+
+    .wall {
+      width: 100%;
+      min-height: 100vh;
+
+      display: flex;
+      justify-content: center;
+      align-items: center;
+
+      position: relative;
+    }
+
+    /* =========================
+       CLOCK CONTAINER
+    ========================= */
+
+    .clock-container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+
+      transform-style: preserve-3d;
+    }
+
+    /* =========================
+       CLOCK BODY
+    ========================= */
+
+    .clock {
+      width: 380px;
+      height: 380px;
+
+      position: relative;
+
+      border-radius: 50%;
+
+      background:
+        radial-gradient(
+          circle at 35% 25%,
+          #555,
+          #202020 55%,
+          #080808 100%
+        );
+
+      border: 12px solid #111;
+
+      box-shadow:
+        0 35px 60px rgba(0, 0, 0, 0.8),
+        0 0 0 8px #555,
+        inset 0 0 30px rgba(255, 255, 255, 0.12);
+
+      transform:
+        rotateX(8deg)
+        rotateY(-8deg);
+
+      transform-style: preserve-3d;
+
+      animation: floatingClock 5s ease-in-out infinite;
+    }
+
+    /* =========================
+       3D BACK DEPTH
+    ========================= */
+
+    .clock::before {
+      content: "";
+
+      position: absolute;
+
+      width: 350px;
+      height: 350px;
+
+      left: 3px;
+      top: 17px;
+
+      border-radius: 50%;
+
+      background: #050505;
+
+      transform: translateZ(-45px);
+
+      box-shadow:
+        0 35px 45px rgba(0, 0, 0, 0.8);
+    }
+
+    /* =========================
+       CLOCK NUMBERS
+    ========================= */
+
+    .number {
+      position: absolute;
+
+      color: white;
+
+      font-size: 27px;
+      font-weight: bold;
+
+      text-shadow:
+        0 3px 5px black;
+
+      transform: translate(-50%, -50%);
+
+      z-index: 5;
+    }
+
+    .n12 {
+      top: 8%;
+      left: 50%;
+    }
+
+    .n1 {
+      top: 14%;
+      left: 71%;
+    }
+
+    .n2 {
+      top: 28%;
+      left: 86%;
+    }
+
+    .n3 {
+      top: 50%;
+      left: 92%;
+    }
+
+    .n4 {
+      top: 72%;
+      left: 86%;
+    }
+
+    .n5 {
+      top: 86%;
+      left: 71%;
+    }
+
+    .n6 {
+      top: 92%;
+      left: 50%;
+    }
+
+    .n7 {
+      top: 86%;
+      left: 29%;
+    }
+
+    .n8 {
+      top: 72%;
+      left: 14%;
+    }
+
+    .n9 {
+      top: 50%;
+      left: 8%;
+    }
+
+    .n10 {
+      top: 28%;
+      left: 14%;
+    }
+
+    .n11 {
+      top: 14%;
+      left: 29%;
+    }
+
+    /* =========================
+       TICK MARKS
+    ========================= */
+
+    .tick {
+      position: absolute;
+
+      width: 4px;
+      height: 12px;
+
+      background: #ddd;
+
+      left: 50%;
+      top: 8px;
+
+      transform-origin: 50% 176px;
+
+      border-radius: 5px;
+
+      z-index: 4;
+    }
+
+    .tick:nth-child(1) {
+      transform: rotate(0deg);
+    }
+
+    .tick:nth-child(2) {
+      transform: rotate(30deg);
+    }
+
+    .tick:nth-child(3) {
+      transform: rotate(60deg);
+    }
+
+    .tick:nth-child(4) {
+      transform: rotate(90deg);
+    }
+
+    .tick:nth-child(5) {
+      transform: rotate(120deg);
+    }
+
+    .tick:nth-child(6) {
+      transform: rotate(150deg);
+    }
+
+    .tick:nth-child(7) {
+      transform: rotate(180deg);
+    }
+
+    .tick:nth-child(8) {
+      transform: rotate(210deg);
+    }
+
+    .tick:nth-child(9) {
+      transform: rotate(240deg);
+    }
+
+    .tick:nth-child(10) {
+      transform: rotate(270deg);
+    }
+
+    .tick:nth-child(11) {
+      transform: rotate(300deg);
+    }
+
+    .tick:nth-child(12) {
+      transform: rotate(330deg);
+    }
+
+    /* =========================
+       CLOCK HANDS
+    ========================= */
+
+    .hand {
+      position: absolute;
+
+      left: 50%;
+      bottom: 50%;
+
+      transform-origin: bottom center;
+
+      transform:
+        translateX(-50%)
+        rotate(0deg);
+
+      border-radius: 10px;
+
+      z-index: 10;
+
+      box-shadow:
+        0 4px 8px rgba(0, 0, 0, 0.7);
+    }
+
+    .hour {
+      width: 9px;
+      height: 85px;
+
+      background: white;
+    }
+
+    .minute {
+      width: 6px;
+      height: 120px;
+
+      background: #ddd;
+    }
+
+    .second {
+      width: 3px;
+      height: 140px;
+
+      background: #ff3030;
+
+      box-shadow:
+        0 0 8px rgba(255, 50, 50, 0.6);
+    }
+
+    /* =========================
+       CENTER
+    ========================= */
+
+    .center {
+      position: absolute;
+
+      width: 24px;
+      height: 24px;
+
+      background:
+        radial-gradient(
+          circle,
+          #fff,
+          #999 60%,
+          #333
+        );
+
+      border-radius: 50%;
+
+      left: 50%;
+      top: 50%;
+
+      transform:
+        translate(-50%, -50%)
+        translateZ(30px);
+
+      z-index: 15;
+
+      box-shadow:
+        0 4px 10px black;
+    }
+
+    /* =========================
+       GLASS
+    ========================= */
+
+    .glass {
+      position: absolute;
+
+      width: 100%;
+      height: 100%;
+
+      border-radius: 50%;
+
+      background:
+        linear-gradient(
+          135deg,
+          rgba(255,255,255,0.16),
+          rgba(255,255,255,0.02)
+        );
+
+      pointer-events: none;
+
+      z-index: 20;
+    }
+
+    /* =========================
+       GLASS REFLECTION
+    ========================= */
+
+    .reflection {
+      position: absolute;
+
+      width: 180px;
+      height: 90px;
+
+      top: 35px;
+      left: 75px;
+
+      border-radius: 50%;
+
+      background:
+        rgba(255,255,255,0.1);
+
+      transform: rotate(-30deg);
+
+      filter: blur(6px);
+
+      z-index: 21;
+
+      animation: reflectionMove 4s ease-in-out infinite;
+    }
+
+    /* =========================
+       INFORMATION BELOW CLOCK
+    ========================= */
+
+    .clock-info {
+      margin-top: 45px;
+
+      text-align: center;
+
+      color: white;
+
+      transform: translateZ(30px);
+
+      text-shadow:
+        0 4px 10px rgba(0, 0, 0, 0.8);
+    }
+
+    /* DAY */
+
+    #day {
+      font-size: 30px;
+
+      font-weight: bold;
+
+      letter-spacing: 3px;
+    }
+
+    /* DATE */
+
+    #date {
+      margin-top: 6px;
+
+      font-size: 17px;
+
+      letter-spacing: 1px;
+
+      opacity: 0.75;
+    }
+
+    /* DIGITAL TIME */
+
+    #digital {
+      display: inline-block;
+
+      margin-top: 15px;
+
+      padding: 9px 22px;
+
+      border-radius: 8px;
+
+      background:
+        linear-gradient(
+          145deg,
+          #050505,
+          #161616
+        );
+
+      color: #00ffcc;
+
+      font-family: monospace;
+
+      font-size: 26px;
+
+      font-weight: bold;
+
+      letter-spacing: 4px;
+
+      box-shadow:
+        inset 0 0 15px rgba(0, 255, 200, 0.25),
+        0 6px 15px rgba(0, 0, 0, 0.7);
+
+      text-shadow:
+        0 0 10px rgba(0, 255, 200, 0.6);
+    }
+
+    /* =========================
+       FLOATING ANIMATION
+    ========================= */
+
+    @keyframes floatingClock {
+
+      0% {
+        transform:
+          rotateX(8deg)
+          rotateY(-8deg)
+          translateY(0);
+      }
+
+      50% {
+        transform:
+          rotateX(8deg)
+          rotateY(-8deg)
+          translateY(-12px);
+      }
+
+      100% {
+        transform:
+          rotateX(8deg)
+          rotateY(-8deg)
+          translateY(0);
+      }
+
+    }
+
+    /* =========================
+       REFLECTION ANIMATION
+    ========================= */
+
+    @keyframes reflectionMove {
+
+      0% {
+        opacity: 0.3;
+        transform:
+          translateX(-10px)
+          rotate(-30deg);
+      }
+
+      50% {
+        opacity: 0.7;
+        transform:
+          translateX(20px)
+          rotate(-30deg);
+      }
+
+      100% {
+        opacity: 0.3;
+        transform:
+          translateX(-10px)
+          rotate(-30deg);
+      }
+
+    }
+
+    /* =========================
+       MOBILE
+    ========================= */
+
+    @media (max-width: 600px) {
+
+      body {
+        overflow-y: auto;
+      }
+
+      .wall {
+        padding: 40px 20px;
+      }
+
+      .clock {
+        width: 300px;
+        height: 300px;
+      }
+
+      .clock::before {
+        width: 270px;
+        height: 270px;
+      }
+
+      .tick {
+        transform-origin: 50% 136px;
+      }
+
+      .number {
+        font-size: 22px;
+      }
+
+      .hour {
+        height: 65px;
+      }
+
+      .minute {
+        height: 90px;
+      }
+
+      .second {
+        height: 110px;
+      }
+
+      #day {
+        font-size: 24px;
+      }
+
+      #date {
+        font-size: 15px;
+      }
+
+      #digital {
+        font-size: 21px;
+      }
+    }
+
+  </style>
+</head>
+
+<body>
+
+  <div class="wall">
+
+    <div class="clock-container">
+
+      <!-- =========================
+           3D ANALOG CLOCK
+      ========================== -->
+
+      <div class="clock">
+
+        <!-- Clock Numbers -->
+
+        <div class="number n12">12</div>
+        <div class="number n1">1</div>
+        <div class="number n2">2</div>
+        <div class="number n3">3</div>
+        <div class="number n4">4</div>
+        <div class="number n5">5</div>
+        <div class="number n6">6</div>
+        <div class="number n7">7</div>
+        <div class="number n8">8</div>
+        <div class="number n9">9</div>
+        <div class="number n10">10</div>
+        <div class="number n11">11</div>
+
+
+        <!-- Tick Marks -->
+
+        <div class="tick"></div>
+        <div class="tick"></div>
+        <div class="tick"></div>
+        <div class="tick"></div>
+        <div class="tick"></div>
+        <div class="tick"></div>
+        <div class="tick"></div>
+        <div class="tick"></div>
+        <div class="tick"></div>
+        <div class="tick"></div>
+        <div class="tick"></div>
+        <div class="tick"></div>
+
+
+        <!-- Clock Hands -->
+
+        <div id="hour" class="hand hour"></div>
+
+        <div id="minute" class="hand minute"></div>
+
+        <div id="second" class="hand second"></div>
+
+
+        <!-- Center -->
+
+        <div class="center"></div>
+
+
+        <!-- Glass -->
+
+        <div class="glass"></div>
+
+        <div class="reflection"></div>
+
+      </div>
+
+
+      <!-- =========================
+           DAY / DATE / DIGITAL TIME
+      ========================== -->
+
+      <div class="clock-info">
+
+        <div id="day">
+          Monday
+        </div>
+
+        <div id="date">
+          January 1, 2026
+        </div>
+
+        <div id="digital">
+          00:00:00
+        </div>
+
+      </div>
+
+    </div>
+
+  </div>
+
+
+  <!-- =========================
+       JAVASCRIPT
+  ========================== -->
+
+  <script>
+
+    function updateClock() {
+
+      // Get current date and time
+
+      const now = new Date();
+
+
+      // Get hours, minutes and seconds
+
+      const hours = now.getHours();
+
+      const minutes = now.getMinutes();
+
+      const seconds = now.getSeconds();
+
+
+      // =====================================
+      // SECOND HAND
+      // =====================================
+
+      // 60 seconds = 360 degrees
+
+      // 360 / 60 = 6 degrees
+
+      const secondDegree =
+        seconds * 6;
+
+
+      // =====================================
+      // MINUTE HAND
+      // =====================================
+
+      const minuteDegree =
+        minutes * 6 +
+        seconds * 0.1;
+
+
+      // =====================================
+      // HOUR HAND
+      // =====================================
+
+      const hourDegree =
+        (hours % 12) * 30 +
+        minutes * 0.5;
+
+
+      // =====================================
+      // APPLY HAND ROTATION
+      // =====================================
+
+      document.getElementById("second").style.transform =
+        `translateX(-50%) rotate(${secondDegree}deg)`;
+
+
+      document.getElementById("minute").style.transform =
+        `translateX(-50%) rotate(${minuteDegree}deg)`;
+
+
+      document.getElementById("hour").style.transform =
+        `translateX(-50%) rotate(${hourDegree}deg)`;
+
+
+      // =====================================
+      // DAY
+      // =====================================
+
+      const day =
+        now.toLocaleDateString("en-US", {
+          weekday: "long"
+        });
+
+
+      document.getElementById("day").innerText =
+        day;
+
+
+      // =====================================
+      // DATE
+      // =====================================
+
+      const date =
+        now.toLocaleDateString("en-US", {
+          month: "long",
+          day: "numeric",
+          year: "numeric"
+        });
+
+
+      document.getElementById("date").innerText =
+        date;
+
+
+      // =====================================
+      // DIGITAL TIME
+      // =====================================
+
+      const digitalTime =
+        String(hours).padStart(2, "0") +
+        ":" +
+        String(minutes).padStart(2, "0") +
+        ":" +
+        String(seconds).padStart(2, "0");
+
+
+      document.getElementById("digital").innerText =
+        digitalTime;
+
+    }
+
+
+    // Run immediately when page loads
+
+    updateClock();
+
+
+    // Update every second
+
+    setInterval(updateClock, 1000);
+
+  </script>
+
+</body>
+</html>
